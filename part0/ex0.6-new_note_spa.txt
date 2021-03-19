@@ -1,0 +1,8 @@
+note about browser:
+form submit
+creates note from form data
+appends note to notes array
+redraws the notes
+sends POST with JSON data
+
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa

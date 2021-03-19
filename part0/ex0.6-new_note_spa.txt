@@ -4,5 +4,6 @@ creates note from form data
 appends note to notes array
 redraws the notes
 sends POST with JSON data
+end note
 
 browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa

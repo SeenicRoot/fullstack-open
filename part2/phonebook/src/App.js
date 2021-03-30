@@ -60,13 +60,6 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <Filter value={searchTerm} onChange={event => setSearchTerm(event.target.value)} />
-      {/* <form onSubmit={addPerson} formValues={formValues} setFormValues={setFormValues}>
-        <div>name: <input value={newName} onChange={event => setNewName(event.target.value)}/></div>
-        <div>number: <input value={newNumber} onChange={event => setNewNumber(event.target.value)}/></div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form> */}
       <PersonForm handleSubmit={addPerson} newName={newName} newNumber={newNumber} setNewName={setNewName} setNewNumber={setNewNumber} />
       <Persons persons={filteredPersons} />
     </div>

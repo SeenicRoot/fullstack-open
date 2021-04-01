@@ -9,8 +9,9 @@ const CapitalWeather = ({capital}) => {
   useEffect(() => {
     let isMounted = true;
     axios
-    .get(`http://api.weatherstack.com/current?access_key=${api_key}&query=${capital}`)
+    .get('http://api.weatherstack.com/current', {params: {access_key: api_key, query: capital}})
     .then(response => {
+      console.log(response.data);
       if (isMounted) {
         setWeatherData(response.data)
       }
@@ -28,7 +29,7 @@ const CapitalWeather = ({capital}) => {
       <h3>Weather in {capital}</h3>
       <p>temperature: {weatherData.current.temperature}</p>
       <img src={weatherData.current.weather_icons[0]} alt={`${weatherData.current.weather_descriptions[0]} weather icon`} />
-      <p>wind: {}</p>
+      <p>wind: {weatherData.current.wind_speed}km/h direction: {weatherData.current.wind_dir}</p>
     </div>
   )
 }
@@ -83,7 +84,7 @@ const Country = ({country, button}) => {
 
 const Countries = ({countries}) => {
   if (countries.length > 10) {
-    return <div>Too many matches, specify another filter</div>
+    return <div>Too many matches, please specify further</div>
   }
   else if (countries.length === 1) {
     const [country] = countries

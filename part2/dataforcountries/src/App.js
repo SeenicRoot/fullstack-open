@@ -62,12 +62,10 @@ const Country = ({country, button}) => {
   if (!button) {
     return <CountryInfo country={country}/>
   }
-
   else {
     const handleClick = () => {
       setShowInfo(!showInfo)
     }
-
     if (!showInfo) {
       return <div>{country.name} <button onClick={handleClick}>show</button></div>
     }

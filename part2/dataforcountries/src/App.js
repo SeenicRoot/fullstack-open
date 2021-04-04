@@ -27,7 +27,7 @@ const CapitalWeather = ({capital}) => {
   return (
     <div>
       <h3>Weather in {capital}</h3>
-      <p>temperature: {weatherData.current.temperature}</p>
+      <p>temperature: {weatherData.current.temperature}°C</p>
       <img src={weatherData.current.weather_icons[0]} alt={`${weatherData.current.weather_descriptions[0]} weather icon`} />
       <p>wind: {weatherData.current.wind_speed}km/h direction: {weatherData.current.wind_dir}</p>
     </div>

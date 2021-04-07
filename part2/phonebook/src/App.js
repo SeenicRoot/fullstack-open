@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+
+import personService from './services/persons'
 
 const PersonForm = (props) => {
   return (
@@ -19,14 +20,18 @@ const Filter = (props) => {
   )
 }
 
-const Person = ({person}) => (
-  <p>{person.name} {person.number}</p> 
+const Person = ({person, deletePerson}) => (
+  <li>
+    {person.name} {person.number} <button onClick={() => deletePerson(person)}>delete</button>
+  </li>
 )
 
-const Persons = ({persons}) => (
+const Persons = ({persons, deletePerson}) => (
   <div>
   <h2>Numbers</h2>
-   {persons.map(person => <Person key={person.name} person={person} />)}
+  <ul>
+    {persons.map(person => <Person key={person.name} person={person} deletePerson={deletePerson}/>)}
+  </ul>
   </div>
 )
 
@@ -37,23 +42,52 @@ const App = () => {
   const [ searchTerm, setSearchTerm ] = useState('')
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
-      })
+    personService.getAll()
+      .then(initialPersons => setPersons(initialPersons))
   }, [])
+
+  const changePersonNumber = (personId) => {
+    personService.update(personId, {name: newName, number: newNumber})
+      .then(personData => {
+        setPersons(persons.map(person => person.name !== newName ? person : personData))
+      })
+      .catch(error => {
+        alert(`${newName} doesn't exist in the server anymore`)
+        setPersons(persons.filter(person => person.id !== personId))
+      })
+    return
+  }
 
   const addPerson = event => {
     event.preventDefault()
-
     if (persons.some(person => person.name === newName)) {
-      window.alert(`${newName} is already added to phonebook`)
+      if (window.confirm(`${newName} is already in the phonebook, replace the old number with a new one?`)){
+        const personId = persons.find(person => person.name === newName).id
+        changePersonNumber(personId)
+      }
     }
     else {
-      setPersons(persons.concat({name: newName, number: newNumber}))
-      setNewName('')
-      setNewNumber('')
+      const newPerson = {name: newName, number: newNumber}
+      personService.create(newPerson)
+        .then(personData => {
+          setPersons(persons.concat(personData))
+          setNewName('')
+          setNewNumber('')
+        })
+    }
+  }
+
+  const deletePerson = (person) => {
+    if (window.confirm(`Are you sure you want to delete '${person.name}' from phonebook?`)) {
+      personService.deletePersonId(person.id)
+        .then(() => {
+          let newPersons = persons.slice()
+          newPersons.splice(persons.indexOf(person), 1)
+          setPersons(newPersons)
+        })
+        .catch(error => {
+          setPersons(persons.filter(p => p !== person))
+        })
     }
   }
 
@@ -64,7 +98,7 @@ const App = () => {
       <h2>Phonebook</h2>
       <Filter value={searchTerm} onChange={event => setSearchTerm(event.target.value)} />
       <PersonForm handleSubmit={addPerson} newName={newName} newNumber={newNumber} setNewName={setNewName} setNewNumber={setNewNumber} />
-      <Persons persons={filteredPersons} />
+      <Persons persons={filteredPersons} deletePerson={deletePerson}/>
     </div>
   )
 }

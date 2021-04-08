@@ -2,6 +2,19 @@ import React, { useState, useEffect } from 'react'
 
 import personService from './services/persons'
 
+const Notification = ({ message, error }) => {
+  if (message === null) {
+    return null
+  }
+
+  const flag = error ? 'error' : 'success'
+  return (
+    <div className={flag}>
+      {message}
+    </div>
+  )
+}
+
 const PersonForm = (props) => {
   return (
     <form onSubmit={props.handleSubmit}>
@@ -16,7 +29,7 @@ const PersonForm = (props) => {
 
 const Filter = (props) => {
   return (
-    <input value={props.value} onChange={props.onChange} />
+    <>filter name: <input value={props.value} onChange={props.onChange} /></>
   )
 }
 
@@ -40,6 +53,8 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ searchTerm, setSearchTerm ] = useState('')
+  const [ errorMessage, setErrorMessage ] = useState(null)
+  const [ errorFlag, setErrorFlag ] = useState(true)
 
   useEffect(() => {
     personService.getAll()
@@ -49,11 +64,20 @@ const App = () => {
   const changePersonNumber = (personId) => {
     personService.update(personId, {name: newName, number: newNumber})
       .then(personData => {
+        setErrorFlag(false)
+        setErrorMessage(`${newName}'s number was changed`)
         setPersons(persons.map(person => person.name !== newName ? person : personData))
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
       })
       .catch(error => {
-        alert(`${newName} doesn't exist in the server anymore`)
+        setErrorFlag(true)
+        setErrorMessage(`${newName} doesn't exist in the server anymore`)
         setPersons(persons.filter(person => person.id !== personId))
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
       })
     return
   }
@@ -73,6 +97,11 @@ const App = () => {
           setPersons(persons.concat(personData))
           setNewName('')
           setNewNumber('')
+          setErrorFlag(false)
+          setErrorMessage(`${newName} was added to the phonebook`)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
         })
     }
   }
@@ -93,9 +122,12 @@ const App = () => {
 
   const filteredPersons = persons.filter(person => person.name.toLowerCase().includes(searchTerm.toLowerCase()))
 
+  console.log('rendering...');
+
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} error={errorFlag}/>
       <Filter value={searchTerm} onChange={event => setSearchTerm(event.target.value)} />
       <PersonForm handleSubmit={addPerson} newName={newName} newNumber={newNumber} setNewName={setNewName} setNewNumber={setNewNumber} />
       <Persons persons={filteredPersons} deletePerson={deletePerson}/>

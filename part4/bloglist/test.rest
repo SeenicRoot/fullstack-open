@@ -6,8 +6,8 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-    "title": "Node.js 16 available now",
-    "author": "Bethany Griggs",
-    "url": "https://nodejs.medium.com/node-js-16-available-now-7f5099a97e70",
-    "likes": 84
+    "title": "Discord Ends Deal Talks With Microsoft",
+    "author": "Sarah E. Needleman and Cara Lombardo",
+    "url": "https://www.wsj.com/articles/discord-ends-deal-talks-with-microsoft-11618938806",
+    "likes": 0
 }

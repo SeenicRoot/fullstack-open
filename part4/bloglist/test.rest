@@ -2,6 +2,10 @@ GET http://localhost:3003/api/blogs
 
 ###
 
+DELETE http://localhost:3003/api/blogs/607f557d5e01b43c201af2ad
+
+###
+
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
@@ -10,4 +14,16 @@ Content-Type: application/json
     "author": "Sarah E. Needleman and Cara Lombardo",
     "url": "https://www.wsj.com/articles/discord-ends-deal-talks-with-microsoft-11618938806",
     "likes": 0
+}
+
+###
+
+PUT http://localhost:3003/api/blogs/60887a7d1e150162928a11ab
+Content-Type: application/json
+
+{
+    "title": "new title",
+    "author": "new author",
+    "url": "new url",
+    "likes": 6
 }

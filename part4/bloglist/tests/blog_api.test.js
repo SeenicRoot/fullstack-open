@@ -4,11 +4,29 @@ const helper = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
+const User = require('../models/user')
+
+let token = ''
+let userId = ''
+beforeAll(async () => {
+  const newUser = {
+    username: 'BlogPoster',
+    password: '12345',
+  }
+  await api.post('/api/users').send(newUser)
+  const loginResponse = await api.post('/api/login').send(newUser)
+  const user = await User.findOne({username: newUser.username.toLowerCase()})
+  userId = user._id
+  token = loginResponse.body.token
+})
 
 beforeEach(async () => {
   await Blog.deleteMany({})
 
-  const blogObjects = helper.initialBlogs.map(blog => new Blog(blog))
+  const blogObjects = helper.initialBlogs.map(blog => {
+    blog.user = userId
+    return new Blog(blog)
+  })
   const promiseArray = blogObjects.map(blog => blog.save())
   await Promise.all(promiseArray)
 })
@@ -37,13 +55,15 @@ describe('addition of a blog', () => {
 
     const response = await api
       .post('/api/blogs')
+      .set('Authorization', `bearer ${token}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
-    const blogsAtEnd = await helper.blogsInDb()
+    let blogsAtEnd = await helper.blogsInDb()
+    blogsAtEnd = blogsAtEnd.map(blog => JSON.parse(JSON.stringify(blog)))
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
-    expect(blogsAtEnd).toContainEqual(response.body)
+    expect(blogsAtEnd[blogsAtEnd.length - 1]).toEqual(response.body)
   })
 
   test('if blog likes property is missing, likes is set to 0', async() => {
@@ -55,6 +75,7 @@ describe('addition of a blog', () => {
 
     const response = await api
       .post('/api/blogs')
+      .set('Authorization', `bearer ${token}`)
       .send(newBlog)
     
     expect(response.body).toHaveProperty('likes', 0)
@@ -74,28 +95,73 @@ describe('addition of a blog', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `bearer ${token}`)
       .send('noUrlBlog')
       .expect(400)
     await api
       .post('/api/blogs')
+      .set('Authorization', `bearer ${token}`)
       .send('noTitleBlog')
       .expect(400)
+  })
+  test('needs a token', async () => {
+    const newBlog = {
+      title: 'Starting this newsletter, print debugging, BYOC',
+      author: 'Geoffrey Litt',
+      url: 'https://buttondown.email/geoffreylitt/archive/starting-this-newsletter-print-debugging-byoc/',
+      likes: 0,
+    }
+    const response = await api.post('/api/blogs').send(newBlog).expect(401)
   })
 })
 
 describe('deletion of a blog', () => {
-  test('succeeds with status code 204 if id is valid', async () => {
+  test('succeeds with status code 204 if id and token are valid', async () => {
     const blogsAtStart = await helper.blogsInDb()
     const blogToDelete = blogsAtStart[0]
 
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
+      .set('Authorization', `bearer ${token}`)
       .expect(204)
 
     const blogsAtEnd = await helper.blogsInDb()
 
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
     expect(blogsAtEnd).not.toContainEqual(blogToDelete)
+  })
+  
+  test('fails if user is not the owner of the post', async () => {
+    const badUser = {
+      username: 'BadUser',
+      password: 'IMightBeMalicious'
+    }
+    await api.post('/api/users').send(badUser)
+    const response = await api.post('/api/login').send(badUser)
+
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToDelete = blogsAtStart[0]
+
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .set('Authorization', `bearer ${response.body.token}`)
+      .expect(403)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toEqual(blogsAtStart)
+    await User.findOneAndDelete({ username: 'BadUser' })
+  })
+
+  test('fails if token not given', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToDelete = blogsAtStart[0]
+
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(401)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toEqual(blogsAtStart)
   })
 })
 
@@ -139,6 +205,7 @@ describe('update of a blog', () => {
   })
 })
 
-afterAll(() => {
+afterAll(async () => {
+  await User.findByIdAndDelete(userId)
   mongoose.connection.close()
 })

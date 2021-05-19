@@ -1,0 +1,19 @@
+.green-noti {
+  color: green;
+  background-color: gainsboro;
+  font-size: 20px;
+  border: 2px solid;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 0px 10px 20px 10px;
+}
+
+.red-noti {
+  color: red;
+  background-color: gainsboro;
+  font-size: 20px;
+  border: 2px solid;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 0px 10px 20px 10px;
+}

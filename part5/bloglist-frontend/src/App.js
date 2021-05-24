@@ -1,22 +1,17 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import NewPostForm from './components/NewPostForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Toggleable from './components/Toggleable'
 
 const App = () => {
-  const [loginVisible, setLoginVisible] = useState(false)
-
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
 
   const [notificationMessage, setNotificationMessage] = useState(null)
   const [notificationError, setNotificationError] = useState(false)
@@ -65,15 +60,22 @@ const App = () => {
     setUsername('')
     setPassword('')
   }  
-
-  const createPost = async event => {
-    event.preventDefault()
+  
+  const newPostRef = useRef()
+  
+  const newPostForm = () => (
+    <Toggleable buttonLabel="new post" ref={newPostRef}>
+      <NewPostForm 
+        createPost={createPost}
+      />
+    </Toggleable>
+  )
+  
+  const createPost = async postObject => {
     try {
-      const response = await blogService.create({title, author, url})
+      const response = await blogService.create(postObject)
+      newPostRef.current.toggleVisibility()
       setBlogs(blogs.concat(response))
-      setTitle('')
-      setAuthor('')
-      setUrl('')
       setNotificationMessage('blog post added succesfully')
       setTimeout(() => {
         setNotificationMessage(null)
@@ -89,7 +91,7 @@ const App = () => {
       }, 5000)
     }
   }
-
+  
   return (
     <div>
       <Notification notificationMessage={notificationMessage} notificationError={notificationError} />
@@ -103,14 +105,7 @@ const App = () => {
         /> :
         <>
           <p>logged in as {user.username} <button onClick={userLogout}>logout</button></p>
-          <NewPostForm
-          title={title}
-          handleTitleChange={({target}) => setTitle(target.value)}
-          author={author}
-          handleAuthorChange={({target}) => setAuthor(target.value)}
-          url={url}
-          handleUrlChange={({target}) => setUrl(target.value)}
-          createPost={createPost}/>
+          {newPostForm()}
         </>
       }
       <h2>blogs</h2>

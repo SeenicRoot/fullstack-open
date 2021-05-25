@@ -3,7 +3,7 @@ import Blog from './components/Blog'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import NewPostForm from './components/NewPostForm'
-import blogService from './services/blogs'
+import blogsService from './services/blogs'
 import loginService from './services/login'
 import Toggleable from './components/Toggleable'
 
@@ -17,9 +17,11 @@ const App = () => {
   const [notificationError, setNotificationError] = useState(false)
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )
+    const fetchBlogs = async () => {
+      const blogs = await blogsService.getAll()
+      setBlogs(blogs)
+    }
+    fetchBlogs()
   }, [])
 
   useEffect(() => {
@@ -27,9 +29,18 @@ const App = () => {
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
-      blogService.setToken(user.token)
+      blogsService.setToken(user.token)
     }
   }, [])
+
+  const addLike = async blog => {
+    const blogChanges = {
+      id: blog.id,
+      likes: blog.likes + 1,
+    }
+    const updatedBlog = await blogsService.update(blogChanges)
+    setBlogs(blogs.map(b => b.id === updatedBlog.id ? updatedBlog : b))
+  }
 
   const userLogin = async event => {
     event.preventDefault()
@@ -37,7 +48,7 @@ const App = () => {
     try {
       const user = await loginService.login({username, password})
       window.localStorage.setItem('loggedUser', JSON.stringify(user))
-      blogService.setToken(user.token)
+      blogsService.setToken(user.token)
       setUser(user)
       setUsername('')
       setPassword('')
@@ -55,7 +66,7 @@ const App = () => {
 
   const userLogout = () => {
     window.localStorage.removeItem('loggedUser')
-    blogService.setToken(null)
+    blogsService.setToken(null)
     setUser(null)
     setUsername('')
     setPassword('')
@@ -73,7 +84,7 @@ const App = () => {
   
   const createPost = async postObject => {
     try {
-      const response = await blogService.create(postObject)
+      const response = await blogsService.create(postObject)
       newPostRef.current.toggleVisibility()
       setBlogs(blogs.concat(response))
       setNotificationMessage('blog post added succesfully')
@@ -110,7 +121,7 @@ const App = () => {
       }
       <h2>blogs</h2>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} addLike={addLike}/>
       )}
     </div>
   )

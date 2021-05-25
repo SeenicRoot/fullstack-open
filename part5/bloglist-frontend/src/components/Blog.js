@@ -1,10 +1,14 @@
 import React, { useState } from 'react'
 
-const Blog = ({blog}) => {
+const Blog = ({blog, addLike}) => {
   const [showDetails, setShowDetails] = useState(false)
 
   const handleShowDetails = () => {
     setShowDetails(!showDetails)
+  }
+
+  const handleAddLike = () => {
+    addLike(blog)
   }
 
   const blogStyle = {
@@ -18,7 +22,7 @@ const Blog = ({blog}) => {
       <div style={blogStyle}>
         <h4 style={{display: 'inline'}}>{blog.title}</h4> <button onClick={handleShowDetails}>hide</button><br />
         <a href={blog.url}>{blog.url}</a><br />
-        {blog.likes} likes <button>like</button><br />
+        {blog.likes} likes <button onClick={handleAddLike}>like</button><br />
         {blog.author}
       </div>
     )

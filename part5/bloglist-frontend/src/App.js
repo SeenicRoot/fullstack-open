@@ -52,7 +52,7 @@ const App = () => {
     event.preventDefault()
 
     try {
-      const user = await loginService.login({username, password})
+      const user = await loginService.login({ username, password })
       window.localStorage.setItem('loggedUser', JSON.stringify(user))
       blogsService.setToken(user.token)
       setUser(user)
@@ -74,20 +74,18 @@ const App = () => {
     window.localStorage.removeItem('loggedUser')
     blogsService.setToken(null)
     setUser(null)
-    setUsername('')
-    setPassword('')
-  }  
-  
+  }
+
   const newBlogRef = useRef()
-  
+
   const newBlogForm = () => (
     <Toggleable buttonLabel="new blog" ref={newBlogRef}>
-      <NewBlogForm 
+      <NewBlogForm
         createBlog={createBlog}
       />
     </Toggleable>
   )
-  
+
   const createBlog = async blogObject => {
     try {
       await blogsService.create(blogObject)
@@ -121,7 +119,7 @@ const App = () => {
     }
     catch (exception) {
       setNotificationError(true)
-      setNotificationMessage("you don't have permission to do that")
+      setNotificationMessage('you don\'t have permission to do that')
       setTimeout(() => {
         setNotificationError(false)
         setNotificationMessage(null)
@@ -130,16 +128,16 @@ const App = () => {
   }
 
   const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
-  
+
   return (
     <div>
       <Notification notificationMessage={notificationMessage} notificationError={notificationError} />
       {user === null ?
         <LoginForm
           username={username}
-          handleUsernameChange={({target}) => setUsername(target.value)}
+          handleUsernameChange={({ target }) => setUsername(target.value)}
           password={password}
-          handlePasswordChange={({target}) => setPassword(target.value)}
+          handlePasswordChange={({ target }) => setPassword(target.value)}
           userLogin={userLogin}
         /> :
         <>

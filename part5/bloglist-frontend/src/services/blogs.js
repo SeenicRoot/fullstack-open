@@ -25,5 +25,14 @@ const update = async blogPost => {
   return response.data
 }
 
-const exports = { setToken, getAll, create, update }
+const incrementLikes = async id => {
+  const getResponse = await axios.get(`${baseUrl}/${id}`)
+  const updatedBlogPost = {
+    likes: getResponse.data.likes + 1,
+  }
+  const response = await axios.put(`${baseUrl}/${id}`, updatedBlogPost)
+  return response.data
+}
+
+const exports = { setToken, getAll, create, update, incrementLikes }
 export default exports

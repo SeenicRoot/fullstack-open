@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
-import NewPostForm from './components/NewPostForm'
+import NewBlogForm from './components/NewBlogForm'
 import blogsService from './services/blogs'
 import loginService from './services/login'
 import Toggleable from './components/Toggleable'
@@ -34,8 +34,18 @@ const App = () => {
   }, [])
 
   const addLike = async blog => {
-    const updatedBlog = await blogsService.incrementLikes(blog.id)
-    setBlogs(blogs.map(b => b.id === updatedBlog.id ? updatedBlog : b))
+    try {
+      const updatedBlog = await blogsService.incrementLikes(blog.id)
+      setBlogs(blogs.map(b => b.id === updatedBlog.id ? updatedBlog : b))
+    }
+    catch (exception) {
+      setNotificationError(true)
+      setNotificationMessage('error liking message')
+      setTimeout(() => {
+        setNotificationError(false)
+        setNotificationMessage(null)
+      }, 3000)
+    }
   }
 
   const userLogin = async event => {
@@ -56,7 +66,7 @@ const App = () => {
       setTimeout(() => {
         setNotificationError(false)
         setNotificationMessage(null)
-      }, 5000)
+      }, 3000)
     }
   }
 
@@ -68,25 +78,26 @@ const App = () => {
     setPassword('')
   }  
   
-  const newPostRef = useRef()
+  const newBlogRef = useRef()
   
-  const newPostForm = () => (
-    <Toggleable buttonLabel="new post" ref={newPostRef}>
-      <NewPostForm 
-        createPost={createPost}
+  const newBlogForm = () => (
+    <Toggleable buttonLabel="new blog" ref={newBlogRef}>
+      <NewBlogForm 
+        createBlog={createBlog}
       />
     </Toggleable>
   )
   
-  const createPost = async postObject => {
+  const createBlog = async blogObject => {
     try {
-      const response = await blogsService.create(postObject)
-      newPostRef.current.toggleVisibility()
-      setBlogs(blogs.concat(response))
-      setNotificationMessage('blog post added succesfully')
+      await blogsService.create(blogObject)
+      const blogs = await blogsService.getAll()
+      newBlogRef.current.toggleVisibility()
+      setBlogs(blogs)
+      setNotificationMessage('blog added succesfully')
       setTimeout(() => {
         setNotificationMessage(null)
-      }, 5000)
+      }, 3000)
     }
     catch (exception) {
       setNotificationError(true)
@@ -95,11 +106,30 @@ const App = () => {
       setTimeout(() => {
         setNotificationError(false)
         setNotificationMessage(null)
-      }, 5000)
+      }, 3000)
     }
   }
 
-  const sortedPosts = [...blogs].sort((a, b) => b.likes - a.likes)
+  const deleteBlog = async blogObject => {
+    try {
+      await blogsService.remove(blogObject.id)
+      setBlogs(blogs.filter(blog => blog.id !== blogObject.id))
+      setNotificationMessage('blog deleted')
+      setTimeout(() => {
+        setNotificationMessage(null)
+      }, 3000)
+    }
+    catch (exception) {
+      setNotificationError(true)
+      setNotificationMessage("you don't have permission to do that")
+      setTimeout(() => {
+        setNotificationError(false)
+        setNotificationMessage(null)
+      }, 3000)
+    }
+  }
+
+  const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
   
   return (
     <div>
@@ -114,12 +144,12 @@ const App = () => {
         /> :
         <>
           <p>logged in as {user.username} <button onClick={userLogout}>logout</button></p>
-          {newPostForm()}
+          {newBlogForm()}
         </>
       }
       <h2>blogs</h2>
-      {sortedPosts.map(blog =>
-        <Blog key={blog.id} blog={blog} addLike={addLike}/>
+      {sortedBlogs.map(blog =>
+        <Blog key={blog.id} blog={blog} addLike={addLike} deleteBlog={deleteBlog} user={user}/>
       )}
     </div>
   )

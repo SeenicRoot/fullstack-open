@@ -45,4 +45,18 @@ describe('<Blog />', () => {
     expect(blogDiv).toHaveTextContent(blog.url)
     expect(blogDiv).toHaveTextContent(blog.title)
   })
+
+  test('blog likes button calls event handler correctly', () => {
+    const viewButton = component.getByText('view')
+    fireEvent.click(viewButton)
+
+    const likeButton = component.getByText('like')
+
+    const clicks = 2
+    for (let i = 0; i < clicks; i++) {
+      fireEvent.click(likeButton)
+    }
+
+    expect(addLike.mock.calls.length).toBe(clicks)
+  })
 })

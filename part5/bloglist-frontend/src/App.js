@@ -81,12 +81,12 @@ const App = () => {
   const newBlogForm = () => (
     <Toggleable buttonLabel="new blog" ref={newBlogRef}>
       <NewBlogForm
-        createBlog={createBlog}
+        addBlog={addBlog}
       />
     </Toggleable>
   )
 
-  const createBlog = async blogObject => {
+  const addBlog = async blogObject => {
     try {
       await blogsService.create(blogObject)
       const blogs = await blogsService.getAll()

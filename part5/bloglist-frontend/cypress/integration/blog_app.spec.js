@@ -43,6 +43,29 @@ describe('Blog app', function() {
       cy.get('#new-blog-button').click()
       cy.contains('Introduction to Cypress')
     })
+
+    describe('and user has created a blog', function() {
+      beforeEach(function() {
+        cy.createBlog({
+          title: 'Introduction to Cypress',
+          author: 'Cypress',
+          url: 'https://docs.cypress.io/guides/core-concepts/introduction-to-cypress'
+        })
+        cy.contains('Introduction to Cypress').as('myBlog')
+      })
+
+      it('their blog can be deleted by themselves', function() {
+        cy.get('@myBlog').contains('view').click()
+        cy.get('@myBlog').contains('delete').click()
+        cy.get('html').should('not.contain', 'Introduction to Cypress')
+      })
+
+      it('their blog cannot be deleted by someone else', function() {
+        cy.get('#logout-button').click()
+        cy.get('@myBlog').contains('view').click()
+        cy.get('@myBlog').should('not.contain', 'delete')
+      })
+    })
   })
 
   describe('When there are existing blogs', function() {

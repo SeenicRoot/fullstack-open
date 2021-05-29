@@ -144,7 +144,7 @@ const App = () => {
           userLogin={userLogin}
         /> :
         <>
-          <p>logged in as {user.username} <button onClick={userLogout}>log out</button></p>
+          <p>logged in as {user.username} <button id="logout-button" onClick={userLogout}>log out</button></p>
           {newBlogForm()}
         </>
       }

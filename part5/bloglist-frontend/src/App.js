@@ -35,8 +35,9 @@ const App = () => {
 
   const addLike = async blog => {
     try {
-      const updatedBlog = await blogsService.incrementLikes(blog.id)
-      setBlogs(blogs.map(b => b.id === updatedBlog.id ? updatedBlog : b))
+      await blogsService.incrementLikes(blog.id)
+      blog.likes += 1
+      setBlogs(blogs.map(b => b.id === blog ? blog : b))
     }
     catch (exception) {
       setNotificationError(true)
@@ -88,10 +89,12 @@ const App = () => {
 
   const addBlog = async blogObject => {
     try {
-      await blogsService.create(blogObject)
-      const blogs = await blogsService.getAll()
+      const createdBlog = await blogsService.create(blogObject)
+      createdBlog.user = {
+        username: 'sean'
+      }
+      setBlogs(blogs.concat(createdBlog))
       newBlogRef.current.toggleVisibility()
-      setBlogs(blogs)
       setNotificationMessage('blog added succesfully')
       setTimeout(() => {
         setNotificationMessage(null)
@@ -141,7 +144,7 @@ const App = () => {
           userLogin={userLogin}
         /> :
         <>
-          <p>logged in as {user.username} <button onClick={userLogout}>logout</button></p>
+          <p>logged in as {user.username} <button onClick={userLogout}>log out</button></p>
           {newBlogForm()}
         </>
       }

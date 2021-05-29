@@ -12,6 +12,11 @@ const getAll = async () => {
   return response.data
 }
 
+const getOneFromId = async id => {
+  const response = await axios.get(`${baseUrl}/${id}`)
+  return response.data
+}
+
 const create = async newBlog => {
   const config = {
     headers: { Authorization: token }
@@ -42,5 +47,5 @@ const incrementLikes = async id => {
   return response.data
 }
 
-const exports = { setToken, getAll, create, update, remove, incrementLikes }
+const exports = { setToken, getAll, getOneFromId, create, update, remove, incrementLikes }
 export default exports

@@ -31,7 +31,7 @@ const Blog = ({ blog, addLike, deleteBlog, user }) => {
         <a href={blog.url}>{blog.url}</a><br />
         {blog.likes} likes <button onClick={handleAddLike}>like</button><br />
         {blog.author}<br />
-        {user.username === blog.user.username && <button onClick={handleDeleteBlog}>delete</button>}
+        {user && user.username === blog.user.username && <button onClick={handleDeleteBlog}>delete</button>}
       </div>
     )
   }

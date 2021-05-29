@@ -26,7 +26,7 @@ const Blog = ({ blog, addLike, deleteBlog, user }) => {
 
   if (showDetails) {
     return (
-      <div style={blogStyle}>
+      <div style={blogStyle} className="blog">
         <h4 style={{ display: 'inline' }}>{blog.title}</h4> <button onClick={handleShowDetails}>hide</button><br />
         <a href={blog.url}>{blog.url}</a><br />
         {blog.likes} likes <button onClick={handleAddLike}>like</button><br />

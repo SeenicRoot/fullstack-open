@@ -72,17 +72,49 @@ describe('Blog app', function() {
     beforeEach(() => {
       cy.login({ username: 'sean', password: 'hello' })
       cy.createBlog({
-        title: 'Introduction to Cypress',
-        author: 'Cypress',
-        url: 'https://docs.cypress.io/guides/core-concepts/introduction-to-cypress'
+        title: 'First blog',
+        author: 'An Author',
+        url: 'http://www.first-blog.com'
+      })
+      cy.createBlog({
+        title: 'Second blog',
+        author: 'An Author',
+        url: 'http://www.second-blog.com'
+      })
+      cy.createBlog({
+        title: 'Third blog',
+        author: 'An Author',
+        url: 'http://www.third-blog.com'
       })
       cy.contains('log out').click()
     })
 
     it('a blog can be liked', function() {
-      cy.contains('Introduction to Cypress').as('blogDiv')
+      cy.contains('First blog').as('blogDiv')
       cy.get('@blogDiv').contains('view').click()
       cy.get('@blogDiv').contains('like').click()
+    })
+
+    it.only('blogs are sorted according to amount of likes', function() {
+      cy.get('.blog').then(blogs => {
+        blogs.each(i => cy.wrap(blogs[i]).contains('view').click())
+      })
+
+      cy.contains('Third blog').parent().contains('like').click()
+      cy.wait(100)
+      cy.get('.blog').then(blogs => {
+        cy.wrap(blogs[0]).should('contain', 'Third blog')
+      })
+
+      cy.contains('Second blog').parent().contains('like').click()
+      cy.wait(100)
+      cy.contains('Second blog').parent().contains('like').click()
+      cy.wait(100)
+      cy.get('.blog').then(blogs => {
+        cy.wrap(blogs[0]).should('contain', 'Second blog')
+        cy.wrap(blogs[1]).should('contain', 'Third blog')
+        cy.wrap(blogs[2]).should('contain', 'First blog')
+      })
     })
   })
 })

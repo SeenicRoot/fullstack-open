@@ -1,10 +1,11 @@
 import React from 'react'
+import { act } from 'react-dom/test-utils'
 import '@testing-library/jest-dom/extend-expect'
-import { render, fireEvent } from '@testing-library/react'
+import { render, fireEvent, waitFor } from '@testing-library/react'
 import NewBlogForm from './NewBlogForm'
 
 describe('<NewBlogForm />', () => {
-  test('submit button calls event handler with right details', () => {
+  test('submit button calls event handler with right details', async () => {
     const addBlog = jest.fn()
 
     const component = render(
@@ -35,7 +36,9 @@ describe('<NewBlogForm />', () => {
 
     fireEvent.submit(form)
 
-    expect(addBlog.mock.calls).toHaveLength(1)
-    expect(addBlog.mock.calls[0][0]).toEqual(blog)
+    await waitFor(() => {
+      expect(addBlog.mock.calls).toHaveLength(1)
+      expect(addBlog.mock.calls[0][0]).toEqual(blog)
+    })
   })
 })

@@ -36,8 +36,8 @@ const App = () => {
   const addLike = async blog => {
     try {
       await blogsService.incrementLikes(blog.id)
-      blog.likes += 1
-      setBlogs(blogs.map(b => b.id === blog ? blog : b))
+      const updatedBlog = { ...blog, likes: blog.likes + 1 }
+      setBlogs(blogs.map(b => b.id === updatedBlog.id ? updatedBlog : b))
     }
     catch (exception) {
       setNotificationError(true)

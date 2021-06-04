@@ -1,18 +1,24 @@
-const initialValue = 'Hullo! I am a new notification'
-
-const reducer = (state = initialValue, action) => {
+const reducer = (state = null, action) => {
   switch (action.type) {
-    case 'CHANGE_NOTIFICATION':
+    case 'SET_NOTIFICATION':
       return action.data
+    case 'REMOVE_NOTIFICATION':
+      return null
     default:
       return state
   }
 }
 
-export const changeNotification = message => {
+export const setNotification = message => {
   return {
-    type: 'CHANGE_NOTIFICATION',
+    type: 'SET_NOTIFICATION',
     data: message
+  }
+}
+
+export const removeNotification = () => {
+  return {
+    type: 'REMOVE_NOTIFICATION'
   }
 }
 

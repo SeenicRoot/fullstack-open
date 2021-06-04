@@ -2,6 +2,7 @@ import React from 'react'
 import AnecdoteList from './components/AnecdoteList'
 import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
+import Filter from './components/Filter'
 import { useDispatch } from 'react-redux'
 import { removeNotification, setNotification } from './reducers/notificationReducer'
 
@@ -23,6 +24,7 @@ const App = () => {
     <div>
       <Notification />
       <h2>Anecdotes</h2>
+      <Filter />
       <AnecdoteList autoNotification={autoNotification}/>
       <AnecdoteForm autoNotification={autoNotification}/>
     </div>

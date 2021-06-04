@@ -11,6 +11,7 @@ const Anecdote = ({ anecdote, handleVote }) => (
 
 const AnecdoteList = ({ autoNotification }) => {
   const anecdotes = useSelector(state => state.anecdotes)
+  const filter = useSelector(state => state.filter)
   const dispatch = useDispatch()
 
   const addVote = anecdote => {
@@ -18,7 +19,7 @@ const AnecdoteList = ({ autoNotification }) => {
     autoNotification(`voted for "${anecdote.content}"`, 5000)
   }
 
-  const sortedAnecdotes = [...anecdotes].sort((a, b) => b.votes - a.votes)
+  const sortedAnecdotes = anecdotes.filter(anecdote => anecdote.content.toLowerCase().includes(filter.toLowerCase())).sort((a, b) => b.votes - a.votes)
   return (
     <ul>
       {sortedAnecdotes.map(anecdote => 

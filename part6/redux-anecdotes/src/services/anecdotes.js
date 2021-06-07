@@ -7,7 +7,7 @@ const getAll = async () => {
   return response.data
 }
 
-const createAnecdote = async anecdote => {
+const createNew = async anecdote => {
   const object = {
     content: anecdote,
     votes: 0,
@@ -19,7 +19,7 @@ const createAnecdote = async anecdote => {
 
 const service = {
   getAll,
-  createAnecdote,
+  createNew,
 }
 
 export default service

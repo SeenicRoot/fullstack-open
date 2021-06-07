@@ -6,13 +6,12 @@ import Filter from './components/Filter'
 import { useDispatch } from 'react-redux'
 import { removeNotification, setNotification } from './reducers/notificationReducer'
 import { initializeAnecdotes } from './reducers/anecdoteReducer'
-import anecdotesService from './services/anecdotes'
 
 const App = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    anecdotesService.getAll().then(anecdotes => dispatch(initializeAnecdotes(anecdotes)))
+    dispatch(initializeAnecdotes())
   }, [dispatch])
 
   let timeoutId = null

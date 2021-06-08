@@ -1,6 +1,7 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { addVoteTo } from '../reducers/anecdoteReducer'
+import { setNotification } from '../reducers/notificationReducer'
 
 const Anecdote = ({ anecdote, handleVote }) => (
   <li>
@@ -9,14 +10,14 @@ const Anecdote = ({ anecdote, handleVote }) => (
   </li>
 )
 
-const AnecdoteList = ({ autoNotification }) => {
+const AnecdoteList = () => {
   const anecdotes = useSelector(state => state.anecdotes)
   const filter = useSelector(state => state.filter)
   const dispatch = useDispatch()
 
   const addVote = anecdote => {
     dispatch(addVoteTo(anecdote.id))
-    autoNotification(`voted for "${anecdote.content}"`, 5000)
+    dispatch(setNotification(`voted for "${anecdote.content}"`, 5000))
   }
 
   const sortedAnecdotes = anecdotes.filter(anecdote => anecdote.content.toLowerCase().includes(filter.toLowerCase())).sort((a, b) => b.votes - a.votes)

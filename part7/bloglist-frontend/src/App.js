@@ -6,8 +6,7 @@ import NewBlogForm from './components/NewBlogForm'
 import blogsService from './services/blogs'
 import Toggleable from './components/Toggleable'
 import { useDispatch, useSelector } from 'react-redux'
-import { setNotification } from './reducers/notificationReducer'
-import { initBlogs, setBlogs } from './reducers/blogReducer'
+import { initBlogs } from './reducers/blogReducer'
 import { setUser } from './reducers/userReducer'
 
 const App = () => {
@@ -29,17 +28,6 @@ const App = () => {
     }
   }, [])
 
-  const addLike = async blog => {
-    try {
-      await blogsService.incrementLikes(blog.id)
-      const updatedBlog = { ...blog, likes: blog.likes + 1 }
-      dispatch(setBlogs(blogs.map(b => b.id === updatedBlog.id ? updatedBlog : b)))
-    }
-    catch (exception) {
-      dispatch(setNotification('error liking message', true, 3000))
-    }
-  }
-
   const userLogout = () => {
     window.localStorage.removeItem('loggedUser')
     blogsService.setToken(null)
@@ -53,17 +41,6 @@ const App = () => {
       <NewBlogForm toggleVisibility={() => newBlogRef.current.toggleVisibility()}/>
     </Toggleable>
   )
-
-  const deleteBlog = async blogObject => {
-    try {
-      await blogsService.remove(blogObject.id)
-      dispatch(setBlogs(blogs.filter(blog => blog.id !== blogObject.id)))
-      dispatch(setNotification('blog deleted', false, 3000))
-    }
-    catch (exception) {
-      dispatch(setNotification('you don\'t have permission to do that', true, 3000))
-    }
-  }
 
   const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
 
@@ -79,7 +56,7 @@ const App = () => {
       }
       <h2>blogs</h2>
       {sortedBlogs.map(blog =>
-        <Blog key={blog.id} blog={blog} addLike={addLike} deleteBlog={deleteBlog} />
+        <Blog key={blog.id} blog={blog} />
       )}
     </div>
   )

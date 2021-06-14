@@ -1,23 +1,33 @@
 import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { addLike, deleteBlog } from '../reducers/blogReducer'
+import { setNotification } from '../reducers/notificationReducer'
 
-const Blog = ({ blog, addLike, deleteBlog }) => {
+const Blog = ({ blog }) => {
   const [showDetails, setShowDetails] = useState(false)
 
   const user = useSelector(state => state.user)
+
+  const dispatch = useDispatch()
 
   const handleShowDetails = () => {
     setShowDetails(!showDetails)
   }
 
   const handleAddLike = () => {
-    addLike(blog)
+    dispatch(addLike(blog.id))
   }
 
   const handleDeleteBlog = () => {
     const confirmed = window.confirm(`delete "${blog.title}"?`)
     if (confirmed) {
-      deleteBlog(blog)
+      try {
+        dispatch(deleteBlog(blog.id))
+        dispatch(setNotification('blog deleted', false, 3000))
+      }
+      catch (exception) {
+        dispatch(setNotification('you don\'t have permission to do that', true, 3000))
+      }
     }
   }
 

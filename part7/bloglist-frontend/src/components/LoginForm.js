@@ -1,39 +1,58 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import loginService from '../services/login'
+import blogService from '../services/blogs'
+import { setUser } from '../reducers/userReducer'
+import { setNotification } from '../reducers/notificationReducer'
 
-const LoginForm = ({ userLogin, username, password, handleUsernameChange, handlePasswordChange }) => (
-  <form onSubmit={userLogin}>
-    <h2>log in to application</h2>
-    <div>
-      username
-      <input
-        id="username"
-        type="text"
-        value={username}
-        name="Username"
-        onChange={handleUsernameChange}
-      />
-    </div>
-    <div>
-      password
-      <input
-        id="password"
-        type="password"
-        value={password}
-        name="Password"
-        onChange={handlePasswordChange}
-      />
-    </div>
-    <button id="login-button" type="submit">log in</button>
-  </form>
-)
+const LoginForm = () => {
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
 
-LoginForm.propTypes = {
-  userLogin: PropTypes.func.isRequired,
-  username: PropTypes.string.isRequired,
-  password: PropTypes.string.isRequired,
-  handleUsernameChange: PropTypes.func.isRequired,
-  handlePasswordChange: PropTypes.func.isRequired,
+  const dispatch = useDispatch()
+
+  const handleLogin = async (event) => {
+    event.preventDefault()
+
+    try {
+      const user = await loginService.login({ username, password })
+      window.localStorage.setItem('loggedUser', JSON.stringify(user))
+      blogService.setToken(user.token)
+      dispatch(setUser(user))
+    }
+    catch (exception) {
+      dispatch(setNotification('wrong username or password', true, 3000))
+      setPassword('')
+    }
+  }
+
+  return (
+    <form onSubmit={handleLogin}>
+      <h2>log in to application</h2>
+      <div>
+        username
+        <input
+          id="username"
+          type="text"
+          value={username}
+          name="Username"
+          onChange={(event) => setUsername(event.target.value)}
+        />
+      </div>
+      <div>
+        password
+        <input
+          id="password"
+          type="password"
+          value={password}
+          name="Password"
+          onChange={(event) => setPassword(event.target.value)}
+        />
+      </div>
+      <button id="login-button" type="submit">log in</button>
+    </form>
+  )
 }
 
 export default LoginForm

@@ -19,7 +19,6 @@ const reducer = (state = initialState, action) => {
 
 let timeoutId = null
 export const setNotification = (message, errorFlag, timeout) => {
-  console.log('working')
   return (dispatch) => {
     dispatch({
       type: 'SET_NOTIFICATION',

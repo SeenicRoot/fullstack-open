@@ -1,7 +1,10 @@
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
 
-const Blog = ({ blog, addLike, deleteBlog, user }) => {
+const Blog = ({ blog, addLike, deleteBlog }) => {
   const [showDetails, setShowDetails] = useState(false)
+
+  const user = useSelector(state => state.user)
 
   const handleShowDetails = () => {
     setShowDetails(!showDetails)

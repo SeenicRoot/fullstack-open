@@ -7,6 +7,11 @@ usersRouter.get('/', async (request, response) => {
   response.status(200).json(users)
 })
 
+usersRouter.get('/:id', async (request, response) => {
+  const user = await User.findById(request.params.id).populate('posts', { title: 1, author: 1, url: 1, likes: 1, id: 1})
+  response.status(200).json(user)
+})
+
 usersRouter.post('/', async (request, response) => {
   const body = request.body
   if (!body.password) {

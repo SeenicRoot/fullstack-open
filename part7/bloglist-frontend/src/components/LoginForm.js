@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import loginService from '../services/login'
 import blogService from '../services/blogs'
-import { setUser } from '../reducers/userReducer'
+import { loginUser } from '../reducers/loginReducer'
 import { setNotification } from '../reducers/notificationReducer'
 
 const LoginForm = () => {
@@ -19,7 +19,7 @@ const LoginForm = () => {
       const user = await loginService.login({ username, password })
       window.localStorage.setItem('loggedUser', JSON.stringify(user))
       blogService.setToken(user.token)
-      dispatch(setUser(user))
+      dispatch(loginUser(user))
     }
     catch (exception) {
       dispatch(setNotification('wrong username or password', true, 3000))

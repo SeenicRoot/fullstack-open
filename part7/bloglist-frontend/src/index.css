@@ -21,3 +21,29 @@
 html {
   padding: 0 200px;
 }
+
+nav {
+  display: flex;
+  align-items: center;
+  background-color: gainsboro;
+  height: 50px;
+  margin-bottom: 10px;
+}
+
+.link {
+  padding: 10px;
+}
+
+.nav-right {
+  margin-left: auto;
+  padding-right: 10px;
+}
+
+.login-form > div {
+  padding: 0 5px;
+}
+
+.login-form input {
+  margin: 5px;
+}
+

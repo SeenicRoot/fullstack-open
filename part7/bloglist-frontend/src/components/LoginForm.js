@@ -6,7 +6,7 @@ import blogService from '../services/blogs'
 import { loginUser } from '../reducers/loginReducer'
 import { setNotification } from '../reducers/notificationReducer'
 
-const LoginForm = () => {
+const LoginForm = ({ className }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -27,10 +27,11 @@ const LoginForm = () => {
     }
   }
 
+  className += ' login-form'
+
   return (
-    <form onSubmit={handleLogin}>
-      <h2>log in to application</h2>
-      <div>
+    <form className={ className } onSubmit={handleLogin}>
+      <div style={{ display: 'inline' }}>
         username
         <input
           id="username"
@@ -40,7 +41,7 @@ const LoginForm = () => {
           onChange={(event) => setUsername(event.target.value)}
         />
       </div>
-      <div>
+      <div style={{ display: 'inline' }}>
         password
         <input
           id="password"

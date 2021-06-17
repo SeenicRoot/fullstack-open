@@ -78,7 +78,6 @@ const App = () => {
           <User user={user} />
         </Route>
         <Route path='/users'>
-          <h2>users</h2>
           <Users />
         </Route>
         <Route path='/'>

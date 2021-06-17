@@ -41,7 +41,7 @@ const Blog = ({ blog }) => {
       <p><a href={blog.url}>{blog.url}</a><br /></p>
       <Divider />
       <p>{blog.likes} likes <Button onClick={handleAddLike}>like</Button></p>
-      <p>{blog.author}</p>
+      <p>Written by: {blog.author}</p>
       <div>{login && login.username === blog.user.username && <Button onClick={handleDeleteBlog}>delete</Button>}</div>
       <Divider />
       <Comments blog={blog} />

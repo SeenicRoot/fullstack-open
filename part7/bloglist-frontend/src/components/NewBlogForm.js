@@ -12,7 +12,7 @@ const NewBlogForm = ({ toggleVisibility }) => {
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
 
-  const user = useSelector(state => state.user)
+  const login = useSelector(state => state.login)
 
   const dispatch = useDispatch()
 
@@ -23,7 +23,7 @@ const NewBlogForm = ({ toggleVisibility }) => {
       author,
       url,
       user: {
-        username: user.username,
+        username: login.username,
       },
     }
 

@@ -3,11 +3,17 @@ import {
   Header,
   List,
   Divider,
+  Dimmer,
+  Loader,
 } from 'semantic-ui-react'
 
 const User = ({ user }) => {
   if (!user) {
-    return null
+    return (
+      <Dimmer inverted active>
+        <Loader inverted />
+      </Dimmer>
+    )
   }
 
   return (

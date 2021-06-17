@@ -6,7 +6,9 @@ import Comments from './Comments'
 import {
   Header,
   Button,
-  Divider
+  Divider,
+  Dimmer,
+  Loader,
 } from 'semantic-ui-react'
 
 const Blog = ({ blog }) => {
@@ -32,7 +34,11 @@ const Blog = ({ blog }) => {
   }
 
   if (!blog) {
-    return null
+    return (
+      <Dimmer inverted active>
+        <Loader inverted />
+      </Dimmer>
+    )
   }
 
   return (

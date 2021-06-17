@@ -62,7 +62,8 @@ blogsRouter.put('/:id', async (request, response) => {
   }
 
   const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {new: true})
-  response.json(updatedBlog)
+  const populatedBlog = await updatedBlog.populate({path: 'user', select: 'username'}).execPopulate()
+  response.json(populatedBlog)
 })
 
 blogsRouter.post('/:id/comments', async (request, response) => {
@@ -71,8 +72,8 @@ blogsRouter.post('/:id/comments', async (request, response) => {
   const blog = await Blog.findById(request.params.id)
   blog.comments = blog.comments.concat(comment)
   const updatedBlog = await blog.save()
-
-  response.json(updatedBlog)
+  const populatedBlog = await updatedBlog.populate({path: 'user', select: 'username'}).execPopulate()
+  response.json(populatedBlog)
 })
 
 module.exports = blogsRouter

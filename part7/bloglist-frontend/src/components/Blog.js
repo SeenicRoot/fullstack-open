@@ -3,6 +3,11 @@ import { useSelector, useDispatch } from 'react-redux'
 import { addLike, deleteBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
 import Comments from './Comments'
+import {
+  Header,
+  Button,
+  Divider
+} from 'semantic-ui-react'
 
 const Blog = ({ blog }) => {
   const login = useSelector(state => state.login)
@@ -32,11 +37,13 @@ const Blog = ({ blog }) => {
 
   return (
     <div>
-      <h2>{blog.title}</h2>
+      <Header as="h2">{blog.title}</Header>
       <p><a href={blog.url}>{blog.url}</a><br /></p>
-      <p>{blog.likes} likes <button onClick={handleAddLike}>like</button></p>
+      <Divider />
+      <p>{blog.likes} likes <Button onClick={handleAddLike}>like</Button></p>
       <p>{blog.author}</p>
-      <div>{login && login.username === blog.user.username && <button onClick={handleDeleteBlog}>delete</button>}</div>
+      <div>{login && login.username === blog.user.username && <Button onClick={handleDeleteBlog}>delete</Button>}</div>
+      <Divider />
       <Comments blog={blog} />
     </div>
   )

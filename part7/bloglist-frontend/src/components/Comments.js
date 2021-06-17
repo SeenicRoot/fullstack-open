@@ -1,6 +1,10 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { addComment } from '../reducers/blogReducer'
+import {
+  Form,
+  List
+} from 'semantic-ui-react'
 
 const CommentForm = ({ blogId }) => {
   const [commentField, setCommentField] = useState('')
@@ -15,14 +19,15 @@ const CommentForm = ({ blogId }) => {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
+    <Form onSubmit={handleSubmit}>
+      <Form.Input
+        type="text"
         value={commentField}
         name="comment"
         onChange={event => setCommentField(event.target.value)}
       />
-      <button type="submit">add comment</button>
-    </form>
+      <Form.Button type="submit">add comment</Form.Button>
+    </Form>
   )
 }
 
@@ -30,13 +35,13 @@ const Comments = ({ blog }) => {
   return (
     <div>
       <CommentForm blogId={blog.id} />
-      <ul>
+      <List bulleted>
         {blog.comments.map((comment, index) => (
-          <li key={index}>
+          <List.Item key={index}>
             {comment}
-          </li>
+          </List.Item>
         ))}
-      </ul>
+      </List>
     </div>
   )
 }

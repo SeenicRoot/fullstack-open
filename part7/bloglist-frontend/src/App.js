@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from 'react'
 import {
   Route,
   Switch,
-  Link,
   useRouteMatch
 } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
@@ -10,11 +9,16 @@ import { useDispatch, useSelector } from 'react-redux'
 import Blog from './components/Blog'
 import Blogs from './components/Blogs'
 import Notification from './components/Notification'
-import LoginForm from './components/LoginForm'
 import NewBlogForm from './components/NewBlogForm'
 import Toggleable from './components/Toggleable'
 import Users from './components/Users'
 import User from './components/User'
+import Navbar from './components/Navbar'
+import {
+  Header,
+  Container,
+  Divider
+} from 'semantic-ui-react'
 
 import blogsService from './services/blogs'
 import { initBlogs } from './reducers/blogReducer'
@@ -42,12 +46,6 @@ const App = () => {
     }
   }, [])
 
-  const userLogout = () => {
-    window.localStorage.removeItem('loggedUser')
-    blogsService.setToken(null)
-    dispatch(loginUser(null))
-  }
-
   const newBlogRef = useRef()
 
   const newBlogForm = () => (
@@ -69,15 +67,8 @@ const App = () => {
     : null
 
   return (
-    <div>
-      <nav>
-        <Link className="link" to="/">blogs</Link>
-        <Link className="link" to="/users">users</Link>
-        {login === null ?
-          <LoginForm className="nav-right" /> :
-          <p className="nav-right">Welcome, {login.username}! <button id="logout-button" onClick={userLogout}>log out</button></p>
-        }
-      </nav>
+    <Container>
+      <Navbar />
       <Notification />
       <Switch>
         <Route path='/blogs/:id'>
@@ -91,12 +82,13 @@ const App = () => {
           <Users />
         </Route>
         <Route path='/'>
+          <Header as='h2'>Blogs</Header>
+          <Divider />
           {login !== null && newBlogForm()}
-          <h2>blogs</h2>
           <Blogs blogs={sortedBlogs} />
         </Route>
       </Switch>
-    </div>
+    </Container>
   )
 }
 

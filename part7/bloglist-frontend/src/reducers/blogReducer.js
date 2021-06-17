@@ -47,7 +47,17 @@ export const addLike = (id) => {
     const blog = await blogService.incrementLikes(id)
     dispatch({
       type: 'UPDATE_BLOG',
-      data: blog
+      data: blog,
+    })
+  }
+}
+
+export const addComment = (id, comment) => {
+  return async (dispatch) => {
+    const blog = await blogService.addComment(id, comment)
+    dispatch({
+      type: 'UPDATE_BLOG',
+      data: blog,
     })
   }
 }

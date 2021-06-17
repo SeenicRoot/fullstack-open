@@ -9,12 +9,12 @@ Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InN0Z
 
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InN0ZXZlIiwiaWQiOiI2MDk1YWQ4NzU0Njg2ZjdkZDk4Mzg2MTQiLCJpYXQiOjE2MjA2MTU2MjAsImV4cCI6MTYyMDYxOTIyMH0.oqQ71PLcX4p2UTh6196YBqFSVl60lyF5TWSnNHahQPM
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InN0ZXZlIiwiaWQiOiI2MDk1YWQ4NzU0Njg2ZjdkZDk4Mzg2MTQiLCJpYXQiOjE2MjM4NzI1ODEsImV4cCI6MTYyMzg3NjE4MX0.0Jf1uK0E4OjK1ES9jjInvZJEub1g6HfYygu4bd-V4Rk
 
 {
-    "title": "Why do we buy into the 'cult' of overwork?",
-    "author": "Bryan Lufkin",
-    "url": "https://www.bbc.com/worklife/article/20210507-why-we-glorify-the-cult-of-burnout-and-overwork"
+    "title": "Wayfinder – a relaxing 'art game' in the browser",
+    "author": "vnglst",
+    "url": "https://wayfinder.nfb.ca/"
 }
 
 ###
@@ -27,6 +27,15 @@ Content-Type: application/json
     "author": "new author",
     "url": "new url",
     "likes": 6
+}
+
+###
+
+POST http://localhost:3003/api/blogs/6095a67f1139f650ed9d34f1/comments
+Content-Type: application/json
+
+{
+    "content": "thank god!"
 }
 
 ### USERS ###

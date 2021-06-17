@@ -1,4 +1,7 @@
 import React, { useState, useImperativeHandle } from 'react'
+import {
+  Button
+} from 'semantic-ui-react'
 
 const Toggleable = React.forwardRef((props, ref) => {
   const [visible, setVisible] = useState(false)
@@ -19,7 +22,7 @@ const Toggleable = React.forwardRef((props, ref) => {
   return (
     <div>
       <div style={hideWhenVisible}>
-        <button onClick={toggleVisibility}>{props.buttonLabel}</button>
+        <Button onClick={toggleVisibility}>{props.buttonLabel}</Button>
       </div>
       <div style={showWhenVisible}>
         {props.children}

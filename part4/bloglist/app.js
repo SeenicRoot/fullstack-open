@@ -12,7 +12,7 @@ const logger = require('./utils/logger')
 
 const mongoUrl = config.MONGODB_URI
 mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
-  .then(() => logger.info("connected to database"))
+.then(() => logger.info("connected to database"))
 
 app.use(cors())
 app.use(express.json())

@@ -47,5 +47,13 @@ const incrementLikes = async id => {
   return response.data
 }
 
-const exports = { setToken, getAll, getOneFromId, create, update, remove, incrementLikes }
+const addComment = async (id, comment) => {
+  const data = {
+    content: comment,
+  }
+  const response = await axios.post(`${baseUrl}/${id}/comments`, data)
+  return response.data
+}
+
+const exports = { setToken, getAll, getOneFromId, create, update, remove, incrementLikes, addComment }
 export default exports

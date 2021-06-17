@@ -1,20 +1,23 @@
 import React from 'react'
+import {
+  Item
+} from 'semantic-ui-react'
 
 const Blogs = ({ blogs }) => {
-  const blogStyle = {
-    border: '1px solid black',
-    padding: '5px 6px',
-    margin: '3px 0',
-  }
+  // const blogStyle = {
+  //   border: '1px solid black',
+  //   padding: '5px 6px',
+  //   margin: '3px 0',
+  // }
 
   return (
-    <div>
+    <Item.Group divided>
       {blogs.map(blog => (
-        <div key={blog.id} style={blogStyle}>
+        <Item key={blog.id}>
           <a href={`/blogs/${blog.id}`}>{blog.title} - {blog.author}</a>
-        </div>
+        </Item>
       ))}
-    </div>
+    </Item.Group>
   )
 }
 

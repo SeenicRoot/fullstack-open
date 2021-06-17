@@ -2,6 +2,7 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { addLike, deleteBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
+import Comments from './Comments'
 
 const Blog = ({ blog }) => {
   const login = useSelector(state => state.login)
@@ -36,6 +37,7 @@ const Blog = ({ blog }) => {
       <p>{blog.likes} likes <button onClick={handleAddLike}>like</button></p>
       <p>{blog.author}</p>
       <div>{login && login.username === blog.user.username && <button onClick={handleDeleteBlog}>delete</button>}</div>
+      <Comments blog={blog} />
     </div>
   )
 }

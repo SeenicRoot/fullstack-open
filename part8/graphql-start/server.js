@@ -1,5 +1,5 @@
 const { ApolloServer, gql } = require('apollo-server')
-const { brotliCompressSync } = require('zlib')
+const { v1: uuid } = require('uuid')
 
 let authors = [
   {
@@ -96,18 +96,27 @@ const typeDefs = gql`
     bookCount: Int!
   }
 
-  type Query {
-    bookCount: Int!
-    authorCount: Int!
-    allBooks: [Book!]!
-    allAuthors: [Author!]!
-  }  
-
   type Book {
     title: String!
     author: String!
     published: Int!
     genres: [String!]!
+  }
+
+  type Query {
+    bookCount: Int!
+    authorCount: Int!
+    allBooks(author: String, genre: String): [Book!]!
+    allAuthors: [Author!]!
+  }  
+
+  type Mutation {
+    addBook(
+      title: String!
+      author: String!
+      published: Int!
+      genres: [String!]!
+    ): Book
   }
 `
 
@@ -115,8 +124,20 @@ const resolvers = {
   Query: {
     bookCount: () => books.length,
     authorCount: () => authors.length,
-    allBooks: () => {
-      return books
+    allBooks: (root, args) => {
+      if (!args.author && !args.genre) {
+        return books
+      }
+      const filteredBooks = books.filter(book => {
+        if (args.author && args.author !== book.author) {
+          return false
+        }
+        if (args.genre && !book.genres.includes(args.genre)) {
+          return false
+        }
+        return true
+      })
+      return filteredBooks
     },
     allAuthors: () => {
       return authors
@@ -124,6 +145,17 @@ const resolvers = {
   },
   Author: {
     bookCount: (root) => books.filter(book => book.author === root.name).length  
+  },
+  Mutation: {
+    addBook: (root, args) => {
+      if (!authors.find(author => author.name === args.author)) {
+        const newAuthor = { name: args.author, id: uuid() }
+        authors = authors.concat(newAuthor)
+      }
+      const newBook = { ...args, id: uuid() }
+      books = books.concat(newBook)
+      return newBook
+    }
   },
 }
 

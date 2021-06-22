@@ -1,11 +1,25 @@
 import React, { useState } from 'react'
+import { useMutation } from '@apollo/client'
+import { ADD_BOOK, ALL_AUTHORS, ALL_BOOKS } from '../queries'
 
 const NewBook = (props) => {
   const [title, setTitle] = useState('')
-  const [author, setAuhtor] = useState('')
+  const [author, setAuthor] = useState('')
   const [published, setPublished] = useState('')
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
+
+  const [addBook] = useMutation(ADD_BOOK, {
+    refetchQueries: [{ query: ALL_AUTHORS }, { query: ALL_BOOKS }],
+    onError: (error) => {
+      if (error.networkError) {
+        window.alert(`Error: ${error.networkError.message}`)
+      }
+      else if (error.graphQLErrors) {
+        window.alert(`Error: ${error.graphQLErrors[0].message}`)
+      }
+    }
+  })
 
   if (!props.show) {
     return null
@@ -14,11 +28,11 @@ const NewBook = (props) => {
   const submit = async (event) => {
     event.preventDefault()
     
-    console.log('add book...')
+    addBook({ variables: { title, author, published: parseInt(published), genres } })
 
     setTitle('')
     setPublished('')
-    setAuhtor('')
+    setAuthor('')
     setGenres([])
     setGenre('')
   }
@@ -42,7 +56,7 @@ const NewBook = (props) => {
           author
           <input
             value={author}
-            onChange={({ target }) => setAuhtor(target.value)}
+            onChange={({ target }) => setAuthor(target.value)}
           />
         </div>
         <div>

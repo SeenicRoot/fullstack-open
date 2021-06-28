@@ -11,17 +11,17 @@ const Books = (props) => {
 
   return (
     <div>
-      <h2>books</h2>
+      <h2>Books</h2>
 
       <table>
         <tbody>
           <tr>
             <th></th>
             <th>
-              author
+              Author
             </th>
             <th>
-              published
+              Published
             </th>
           </tr>
           {result.data.allBooks.map(b =>

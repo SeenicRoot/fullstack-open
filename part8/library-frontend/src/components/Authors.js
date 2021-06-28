@@ -21,11 +21,11 @@ const BirthyearChange = ({ authors }) => {
 
   return (
     <div>
-      <h3>Set birthyear</h3>
+      <h3>Set year of birth</h3>
       <form onSubmit={handleSubmit}>
         <div>
           <label>
-            name
+            Name
             <select name="name" value={name} onChange={(event) => setName(event.target.value)} >
               {authors.map((a, i) => (
                 <option key={i} value={a.name}>{a.name}</option>
@@ -34,11 +34,11 @@ const BirthyearChange = ({ authors }) => {
           </label>
         </div>
         <div>
-          <label>born
+          <label>Born
             <input name="born" value={born} onChange={(event) => setBorn(event.target.value)} />
           </label>
         </div>
-        <button type="submit">update author</button>
+        <button type="submit">Update author</button>
       </form>
     </div>
   )
@@ -53,16 +53,16 @@ const Authors = (props) => {
 
   return (
     <div>
-      <h2>authors</h2>
+      <h2>Authors</h2>
       <table>
         <tbody>
           <tr>
             <th></th>
             <th>
-              born
+              Born
             </th>
             <th>
-              books
+              Books
             </th>
           </tr>
           {result.data.allAuthors.map(a =>
@@ -74,7 +74,7 @@ const Authors = (props) => {
           )}
         </tbody>
       </table>
-      <BirthyearChange authors={result.data.allAuthors} />
+      {props.loggedIn && <BirthyearChange authors={result.data.allAuthors} />}
     </div>
   )
 }

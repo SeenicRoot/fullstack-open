@@ -19,7 +19,7 @@ const LoginForm = ({ show, setToken }) => {
       setToken(token)
       localStorage.setItem('user-token', token)
     }
-  }, [result.data])
+  }, [result.data]) //eslint-disable-line
 
   if (!show) {
     return null

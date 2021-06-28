@@ -8,7 +8,7 @@ const GenreFilter = ({ genres, setGenre }) => {
     borderRadius: "5px",
     padding: "3px",
     margin: "0 3px",
-    boxShadow: "0 1px 3px -2px grey"
+    boxShadow: "0 0 1px lightgrey",
   }
 
   return (

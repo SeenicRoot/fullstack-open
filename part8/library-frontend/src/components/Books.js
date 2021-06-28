@@ -4,10 +4,11 @@ import { ALL_BOOKS } from '../queries'
 
 const GenreFilter = ({ genres, setGenre }) => {
   const style = {
-    border: "1px solid black",
-    borderRadius: "7px",
+    border: "1px solid grey",
+    borderRadius: "5px",
     padding: "3px",
-    margin: "0 3px"
+    margin: "0 3px",
+    boxShadow: "0 1px 3px -2px grey"
   }
 
   return (
@@ -20,7 +21,7 @@ const GenreFilter = ({ genres, setGenre }) => {
       ))}
       <label style={style}>
         all
-        <input name="filter" type="radio" onChange={() => setGenre(null)} />
+          <input name="filter" type="radio" onChange={() => setGenre(null)} />
       </label>
     </div>
   )
@@ -40,6 +41,9 @@ const Books = (props) => {
   }, [result.data])
 
   if (!props.show || result.loading) {
+    if (genre) {
+      setGenre(null)
+    }
     return null
   }
 
@@ -48,6 +52,7 @@ const Books = (props) => {
   return (
     <div>
       <h2>Books</h2>
+      <GenreFilter genres={genres} setGenre={setGenre} />
       <table>
         <tbody>
           <tr>
@@ -68,7 +73,6 @@ const Books = (props) => {
           )}
         </tbody>
       </table>
-      <GenreFilter genres={genres} setGenre={setGenre} />
     </div>
   )
 }

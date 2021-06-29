@@ -10,7 +10,7 @@ const Recommendations = ({ show }) => {
     if (meData) {
       allBooks({ variables: { genre: meData.me.favouriteGenre } })
     }
-  }, [meData])
+  }, [meData, allBooks])
   
   if (meLoading || booksLoading || !show) {
     return null

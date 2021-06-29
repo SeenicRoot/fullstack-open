@@ -31,6 +31,7 @@ const App = () => {
         <LoginForm
           show={page === 'login'}
           setToken={setToken}
+          setPage={setPage}
         />
 
         <Authors

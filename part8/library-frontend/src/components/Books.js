@@ -12,7 +12,7 @@ const GenreFilter = ({ genres, setGenre }) => {
   }
 
   return (
-    <div>
+    <div style={{ marginBottom: "10px" }}>
       {genres.map(g => (
         <label key={g} style={style}>
           {g}

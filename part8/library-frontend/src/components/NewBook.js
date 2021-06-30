@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { useMutation, useQuery } from '@apollo/client'
-import { ADD_BOOK, ALL_BOOKS, ME } from '../queries'
+import { useMutation } from '@apollo/client'
+import { ADD_BOOK } from '../queries'
 
 const NewBook = (props) => {
   const [title, setTitle] = useState('')
@@ -9,8 +9,6 @@ const NewBook = (props) => {
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
 
-  const meResult = useQuery(ME)
-
   const [addBook] = useMutation(ADD_BOOK, {
     onError: (error) => {
       if (error.networkError) {
@@ -18,28 +16,6 @@ const NewBook = (props) => {
       }
       else if (error.graphQLErrors) {
         window.alert(`Error: ${error.graphQLErrors[0].message}`)
-      }
-    },
-    update: (store, response) => {
-      const allBooksData = store.readQuery({ query: ALL_BOOKS })
-      store.writeQuery({
-        query: ALL_BOOKS,
-        data: {
-          ...allBooksData,
-          allBooks: [...allBooksData.allBooks, response.data.addBook]
-        }
-      })
-
-      if (meResult && response.data.addBook.genres.includes(meResult.data.me.favouriteGenre)) {
-        const filteredBooksData = store.readQuery({ query: ALL_BOOKS, variables: { genre: meResult.data.me.favouriteGenre } })
-        store.writeQuery({
-          query: ALL_BOOKS,
-          variables: { genre: meResult.data.me.favouriteGenre },
-          data: {
-            ...filteredBooksData,
-            allBooks: [...filteredBooksData.allBooks, response.data.addBook]
-          }
-        })
       }
     }
   })

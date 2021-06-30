@@ -22,6 +22,8 @@ mongoose.connect(MONGODB_URI, {
   console.error('Error connecting to MongoDB')
 })
 
+mongoose.set('debug', true)
+
 const typeDefs = gql`
   type Author {
     name: String!

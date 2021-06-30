@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { useQuery, useMutation } from '@apollo/client'
-import { ALL_AUTHORS, EDIT_AUTHOR } from '../queries'
+import { useQuery, useMutation, useSubscription, useApolloClient } from '@apollo/client'
+import { ALL_AUTHORS, EDIT_AUTHOR, BOOK_ADDED } from '../queries'
 
 const BirthyearChange = ({ authors }) => {
   const [name, setName] = useState('')
@@ -45,7 +45,24 @@ const BirthyearChange = ({ authors }) => {
 }
 
 const Authors = (props) => {
+  const client = useApolloClient()
+
   const result = useQuery(ALL_AUTHORS)
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      const addedBook = subscriptionData.data.bookAdded
+      const allAuthorsInStore = client.readQuery({ query: ALL_AUTHORS })
+      if (!allAuthorsInStore.allAuthors.map(a => a.id).includes(addedBook.author.id)) {
+        client.writeQuery({
+          query: ALL_AUTHORS,
+          data: {
+            allAuthors: allAuthorsInStore.allAuthors.concat(addedBook.author)
+          }
+        })
+      }
+    }
+  })
   
   if (!props.show || result.loading) {
     return null

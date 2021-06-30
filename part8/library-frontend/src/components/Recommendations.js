@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react'
-import { useQuery, useLazyQuery } from '@apollo/client'
-import { ME, ALL_BOOKS } from '../queries'
+import { useQuery, useLazyQuery, useSubscription, useApolloClient } from '@apollo/client'
+import { ME, ALL_BOOKS, BOOK_ADDED } from '../queries'
 
 const Recommendations = ({ show }) => {
+  const client = useApolloClient()
+
   const { loading: meLoading, data: meData } = useQuery(ME)
   const [allBooks, { loading: booksLoading, data: booksData }] = useLazyQuery(ALL_BOOKS)
 
@@ -12,6 +14,33 @@ const Recommendations = ({ show }) => {
     }
   }, [meData, allBooks])
   
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      if (!meData) {
+        return
+      }
+      const addedBook = subscriptionData.data.bookAdded
+      const myGenre = meData.me.favouriteGenre
+      if (addedBook.genres.includes(myGenre)) {
+        const booksInStore = client.readQuery({
+          query: ALL_BOOKS,
+          variables: {
+            genre: myGenre
+          }
+        })
+        client.writeQuery({
+          query: ALL_BOOKS,
+          variables: {
+            genre: myGenre
+          },
+          data: {
+            allBooks: booksInStore.allBooks.concat(addedBook)
+          }
+        })
+      }
+    }
+  })
+
   if (meLoading || booksLoading || !show) {
     return null
   }

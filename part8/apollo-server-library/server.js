@@ -106,7 +106,7 @@ const resolvers = {
     me: (root, args, context) => context.currentUser,
   },
   Author: {
-    bookCount: (root) => Book.countDocuments({ author: root.id }),
+    bookCount: (root) => root.books.length,
   },
   Mutation: {
     addBook: async (root, args, context) => {
@@ -122,13 +122,15 @@ const resolvers = {
 
       let author = await Author.findOne({ name: args.author })
       if (!author) {
-        const newAuthor = new Author({ name: args.author })
+        const newAuthor = new Author({ name: args.author, books: [] })
         author = await newAuthor.save()
       }
 
       try {
         const newBook = new Book({ ...args, author: author._id })
         const savedBook = await newBook.save()
+        author.books = author.books.concat(savedBook._id)
+        await author.save()
         const populatedBook = await savedBook.populate('author').execPopulate()
 
         pubSub.publish('BOOK_ADDED', { bookAdded: populatedBook })

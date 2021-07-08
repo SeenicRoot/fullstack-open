@@ -3,7 +3,7 @@ interface TrainingValues {
   trainingPeriod: Array<number>;
 }
 
-const parseArgs = (args: Array<string>): TrainingValues => {
+export const parseArgs = (args: Array<string>): TrainingValues => {
   const target = Number(args[2]);
   const restOfArgs = args.slice(3);
   const trainingPeriod = restOfArgs.map(d => Number(d));
@@ -22,7 +22,7 @@ const parseArgs = (args: Array<string>): TrainingValues => {
     target,
     trainingPeriod
   };
-}
+};
 
 interface Result {
   periodLength: number;
@@ -34,7 +34,7 @@ interface Result {
   ratingDescription: string;
 }
 
-const calculateExercise = (trainingPeriod: Array<number>, target: number): Result => {
+export const calculateExercise = (trainingPeriod: Array<number>, target: number): Result => {
   const trainingDays = trainingPeriod.filter(d => d > 0).length;
   const average = trainingPeriod.reduce((prev, curr) => prev + curr) / trainingPeriod.length;
   const calculateRating = (): number => {
@@ -44,9 +44,9 @@ const calculateExercise = (trainingPeriod: Array<number>, target: number): Resul
     if (average > target * .7) {
       return 2;
     }
-    return 1
-  }
-  const rating = calculateRating()
+    return 1;
+  };
+  const rating = calculateRating();
   const getRatingDescription = (): string => {
     switch (rating) {
       case 3:
@@ -58,8 +58,8 @@ const calculateExercise = (trainingPeriod: Array<number>, target: number): Resul
       default:
         throw new Error('Unhandled rating');
     }
-  }
-  const ratingDescription = getRatingDescription()
+  };
+  const ratingDescription = getRatingDescription();
   const result = {
     periodLength: trainingPeriod.length,
     trainingDays,
@@ -70,14 +70,4 @@ const calculateExercise = (trainingPeriod: Array<number>, target: number): Resul
     ratingDescription
   };
   return result;
-}
-
-try {
-  const { target, trainingPeriod } = parseArgs(process.argv);
-  console.log(calculateExercise(trainingPeriod, target));
-}
-catch (exception) {
-  console.error(exception.message);
-}
-
-export {};
+};

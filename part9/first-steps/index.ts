@@ -1,6 +1,9 @@
 import express from 'express';
 import { calculateBmi } from './bmiCalculator';
+import { calculateExercise } from './exerciseCalculator';
 const app = express();
+
+app.use(express.json());
 
 app.get('/hello', (_req, res) => {
   res.send('Hello Full Stack!');
@@ -23,6 +26,24 @@ app.get('/bmi', (req, res) => {
     }
 
     res.send(calculateBmi(height, weight));
+  }
+  catch (exception) {
+    res.status(400).json({ error: exception.message });
+  }
+});
+
+app.post('/exercises', (req, res) => {
+  try {
+    console.log(req.body);
+    if (!req.body.daily_exercise || !req.body.target) {
+      throw new Error('Missing parameters');
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if (req.body.daily_exercise.find((d: any) => isNaN(d)) || isNaN(req.body.target)) {
+      throw new Error('Malformatted parameters');
+    }
+    
+    res.json(calculateExercise(req.body.daily_exercise, req.body.target));
   }
   catch (exception) {
     res.status(400).json({ error: exception.message });

@@ -25,7 +25,7 @@ export const parseArgs = (args: Array<string>): BmiValues => {
     height,
     weight
   };
-}
+};
 
 export const calculateBmi = (height: number, weight: number): string => {
   const heightInMeters = height / 100;
@@ -56,4 +56,4 @@ export const calculateBmi = (height: number, weight: number): string => {
     return 'Obese Class III (Very severely obese)';
   }
   return 'Problem';
-}
+};

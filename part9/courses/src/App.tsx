@@ -23,7 +23,12 @@ interface CourseSubmissionPart extends CoursePartWithDescription {
   exerciseSubmissionLink: string;
 }
 
-type CoursePart = CourseNormalPart | CourseProjectPart | CourseSubmissionPart;
+interface CourseSpecialPart extends CoursePartWithDescription {
+  type: 'special',
+  requirements: string[]
+}
+
+type CoursePart = CourseNormalPart | CourseProjectPart | CourseSubmissionPart | CourseSpecialPart;
 
 const assertNever = (value: never): never => {
   throw new Error(
@@ -48,7 +53,7 @@ const Part = ({coursePart}: {coursePart: CoursePart}) => {
       return (
         <div style={partStyle}>
           <h4 style={headerStyle}>{coursePart.name} {coursePart.exerciseCount}</h4>
-          <div>{coursePart.description}</div>
+          <div><i>{coursePart.description}</i></div>
         </div>
       )
     case 'groupProject':
@@ -62,8 +67,16 @@ const Part = ({coursePart}: {coursePart: CoursePart}) => {
       return (
         <div style={partStyle}>
           <h4 style={headerStyle}>{coursePart.name} {coursePart.exerciseCount}</h4>
-          <div>{coursePart.description}</div>
+          <div><i>{coursePart.description}</i></div>
           <div>Submit here: <a href={coursePart.exerciseSubmissionLink}>{coursePart.exerciseSubmissionLink}</a></div>
+        </div>
+      )
+    case 'special':
+      return (
+        <div style={partStyle}>
+          <h4 style={headerStyle}>{coursePart.name} {coursePart.exerciseCount}</h4>
+          <div><i>{coursePart.description}</i></div>
+          <div>Requirements: {coursePart.requirements.join(', ')}</div>
         </div>
       )
     default:
@@ -113,6 +126,13 @@ const App = () => {
       description: "Confusing description",
       exerciseSubmissionLink: "https://fake-exercise-submit.made-up-url.dev",
       type: "submission"
+    },
+    {
+      name: "Backend development",
+      exerciseCount: 21,
+      description: "Typing the backend",
+      requirements: ["nodejs", "jest"],
+      type: "special"
     }
   ]
 

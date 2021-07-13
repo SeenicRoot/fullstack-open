@@ -1,10 +1,11 @@
 import React from 'react';
 import axios from 'axios';
 import { apiBaseUrl } from '../constants';
-import { Container, Header, Icon } from 'semantic-ui-react';
+import { Container, Header, Icon, List } from 'semantic-ui-react';
 import { Patient } from '../types';
 import { useParams } from 'react-router-dom';
 import { setPatient, useStateValue } from '../state';
+import EntryDetails from './Entry';
 
 const PatientPage = () => {
   const [{ patient }, dispatch] = useStateValue();
@@ -51,6 +52,13 @@ const PatientPage = () => {
       <div>Occupation: {patient.occupation}</div>
       <div>SSN: {patient.ssn}</div>
       <div>Date of birth: {patient.dateOfBirth}</div>
+      {patient.entries && 
+        <List>
+          {patient.entries.map(e => (
+            <EntryDetails key={e.id} entry={e} />
+          ))}
+        </List>
+      }
     </Container>
   );
 };

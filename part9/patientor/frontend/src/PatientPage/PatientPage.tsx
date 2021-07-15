@@ -52,8 +52,9 @@ const PatientPage = () => {
       <div>Occupation: {patient.occupation}</div>
       <div>SSN: {patient.ssn}</div>
       <div>Date of birth: {patient.dateOfBirth}</div>
+      <Header size="small">Entries</Header>
       {patient.entries && 
-        <List>
+        <List celled relaxed>
           {patient.entries.map(e => (
             <EntryDetails key={e.id} entry={e} />
           ))}

@@ -4,10 +4,7 @@ import {
   NewEntry,
   Diagnosis,
   Discharge,
-  HospitalEntry,
-  OccupationalHealthcareEntry,
   SickLeave,
-  HealthCheckEntry,
   HealthCheckRating,
   BaseEntry
 } from "./types";
@@ -170,7 +167,7 @@ const isHealthCheckRating = (healthCheckRating: any): healthCheckRating is Healt
 };
 
 const parseHealthCheckRating = (healthCheckRating: unknown): HealthCheckRating => {
-  if (!healthCheckRating || !isHealthCheckRating(healthCheckRating)) {
+  if ((!healthCheckRating && healthCheckRating !== 0) || !isHealthCheckRating(healthCheckRating)) {
     throw new Error('Unrecognized or missing health check rating');
   }
   return healthCheckRating;
@@ -190,31 +187,28 @@ const toNewEntry = (object: any): NewEntry => {
   }
 
   switch (baseEntry.type) {
+
     case "Hospital":
-      const hospitalEntry: Omit<HospitalEntry, 'id'> = {
+      return {
         ...baseEntry,
         type: baseEntry.type,
         discharge: parseDischarge(object.discharge)
       };
-      return hospitalEntry;
     case "OccupationalHealthcare":
-      const occupationalHealthcareEntry: Omit<OccupationalHealthcareEntry, 'id'> = {
+      const sickLeave = parseSickLeave(object.sickLeave);
+      const occupationalHealthcareEntry = {
         ...baseEntry,
         type: baseEntry.type,
         employerName: parseEmployerName(object.employerName),
+        sickLeave: sickLeave ? sickLeave : undefined
       };
-      const sickLeave = parseSickLeave(object.sickLeave);
-      if (sickLeave) {
-        occupationalHealthcareEntry.sickLeave = sickLeave;
-      }
       return occupationalHealthcareEntry;
     case "HealthCheck":
-      const healthCheckEntry: Omit<HealthCheckEntry, 'id'> = {
+      return {
         ...baseEntry,
         type: baseEntry.type,
-        healthCheckRating: parseHealthCheckRating(object.healthCheckRating)
+        healthCheckRating: parseHealthCheckRating(Number(object.healthCheckRating))
       };
-      return healthCheckEntry;
     default:
       throw new Error("Entry type is wrong");
   }
